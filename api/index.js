@@ -9,16 +9,35 @@ module.exports = async (req, res) => {
     parse(response.body, { columns: true }, (err, rows) => {
       const countries = {}
       for (let index = 0; index < rows.length; index++) {
-        const row = rows[index];
-        const rowCountry = row.countriesAndTerritories;
+        const row = rows[index] ?? null;
+        if(!row || !row.dateRep) {
+          continue;
+        }
+
+        if (!row['Cumulative_number_for_14_days_of_COVID-19_cases_per_100000'] || row['Cumulative_number_for_14_days_of_COVID-19_cases_per_100000'] === "") {
+          continue;
+        }
+
+        if(!row.dateRep) {
+          continue;
+        }
+
+        const rowCountry = row?.countriesAndTerritories ?? null;
+        if (!rowCountry || rowCountry === "") {
+          continue
+        }
         
         // initialize the country information
         if (!(rowCountry in countries)) {
           countries[rowCountry] = {
             dateRep: null,
             casesPer100k: null,
-            country: null
+            country: rowCountry
           }
+        }
+
+        if(rowCountry == "Cases_on_an_international_conveyance_Japan") {
+          console.log(row);
         }
 
         // if the latest data found, update the previous one.
