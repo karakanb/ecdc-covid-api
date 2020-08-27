@@ -19,4 +19,4 @@ This is a simple project that renders the latest information on the number of ca
 ```
 
 ## Website
-[Demo can be found here].(https://covid-cases.karakanb.vercel.app/api).
+[Demo can be found here.](https://ecdc-covid-cases.vercel.app/)
