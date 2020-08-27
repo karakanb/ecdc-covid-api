@@ -1,7 +1,8 @@
 # ECDC API - Covid Cases per 100k Population
 
-This is a simple API that returns the latest information on the number of cases per 100k population for all the countries from the [European Centre for Disease Prevention and Control](https://opendata.ecdc.europa.eu/covid19/casedistribution/) website.
+This is a simple project that renders the latest information on the number of cases per 100k population for all the countries from the [European Centre for Disease Prevention and Control](https://opendata.ecdc.europa.eu/covid19/casedistribution/) website.
 
+## API
 ```json
 [
   {
@@ -16,3 +17,6 @@ This is a simple API that returns the latest information on the number of cases 
   }
 ]
 ```
+
+## Website
+[Demo can be found here].(https://covid-cases.karakanb.vercel.app/api).
