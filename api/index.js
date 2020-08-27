@@ -3,13 +3,30 @@ const got = require('got');
 
 const CSV_URL = "https://opendata.ecdc.europa.eu/covid19/casedistribution/csv"
 
-module.exports = async (req, res) => {
+const allowCors = fn => async (req, res) => {
+  res.setHeader('Access-Control-Allow-Credentials', true)
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  // another common pattern
+  // res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  )
+  if (req.method === 'OPTIONS') {
+    res.status(200).end()
+    return
+  }
+  return await fn(req, res)
+}
+
+const handler = async (req, res) => {
   try {
     const response = await got(CSV_URL);
     parse(response.body, { columns: true }, (err, rows) => {
       const countries = {}
       for (let index = 0; index < rows.length; index++) {
-        const row = rows[index] ?? null;
+        const row = rows[index];
         if(!row || !row.dateRep) {
           continue;
         }
@@ -22,7 +39,11 @@ module.exports = async (req, res) => {
           continue;
         }
 
-        const rowCountry = row?.countriesAndTerritories ?? null;
+        if(!("countriesAndTerritories" in row)) {
+          continue;
+        }
+
+        const rowCountry = row.countriesAndTerritories;
         if (!rowCountry || rowCountry === "") {
           continue
         }
@@ -63,3 +84,5 @@ module.exports = async (req, res) => {
     console.log(error.response.body);
   }
 }
+
+module.exports = allowCors(handler)
