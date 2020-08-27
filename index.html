@@ -53,6 +53,9 @@
             Control</a>.</p>
       </div>
       <div id="example-table"></div>
+
+      <button type="button" id="copy" style="display: none; margin-top: 16px;">Copy high risk countries</button>
+
       <p>Red means the number of cases per 100k population is more than 20 for that country, and yellow means it is
         between 10 and 20.</p>
       <p>The project and the API are all <a style="text-decoration: none;"
@@ -81,7 +84,7 @@
       rowFormatter: function (row) {
         var data = row.getData();
         var colorShouldAlternate = row.getPosition(true) % 2;
-        if (data.casesPer100k > 20) {
+        if (data.casesPer100k >= 20) {
           row.getElement().style.backgroundColor = colorShouldAlternate ? "#FEB2B2" : "#FC8181";
         } else if (data.casesPer100k > 10) {
           row.getElement().style.backgroundColor = colorShouldAlternate ? "#FEEBC8" : "#FBD38D";
@@ -90,8 +93,35 @@
 
       groupBy: function (data) {
         return data.casesPer100k > 20 ? 'High Risk' : (data.casesPer100k > 10 ? 'Medium Risk' : 'Low Risk')
-      }
+      },
+
+      ajaxResponse: function (url, params, response) {
+        document.getElementById("copy").style.display = "block";
+        return response;
+      },
     });
+
+    function copyHighRiskCountriesToClipboard() {
+      var countries = table.getData();
+      var highRiskCountries = countries.filter(country => country.casesPer100k >= 20);
+      var texts = highRiskCountries.map((country) => `${country.country}: ${country.casesPer100k.toFixed(2)}`).join('\n');
+      copyToClipboard(texts);
+      console.log("Copied the countries to the clipboard.")
+    }
+
+    function copyToClipboard(str) {
+      const el = document.createElement('textarea');
+      el.value = str;
+      el.setAttribute('readonly', '');
+      el.style.position = 'absolute';
+      el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    };
+
+    document.querySelector("#copy").addEventListener("click", copyHighRiskCountriesToClipboard);
   </script>
 
 </body>
