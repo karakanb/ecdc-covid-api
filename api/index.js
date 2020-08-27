@@ -43,10 +43,11 @@ const handler = async (req, res) => {
           continue;
         }
 
-        const rowCountry = row.countriesAndTerritories;
+        let rowCountry = row.countriesAndTerritories;
         if (!rowCountry || rowCountry === "") {
           continue
         }
+        rowCountry = rowCountry.replace(/_/g, " ")
         
         // initialize the country information
         if (!(rowCountry in countries)) {
@@ -55,10 +56,6 @@ const handler = async (req, res) => {
             casesPer100k: null,
             country: rowCountry
           }
-        }
-
-        if(rowCountry == "Cases_on_an_international_conveyance_Japan") {
-          console.log(row);
         }
 
         // if the latest data found, update the previous one.
