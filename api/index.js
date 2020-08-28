@@ -81,7 +81,7 @@ const handler = async (req, res) => {
   try {
     const response = await got(CSV_URL);
     parse(response.body, { columns: true }, (err, rows) => {
-      res.setHeader('Cache-Control', 'max-age=0, s-maxage=3600')
+      res.setHeader('Cache-Control', 'max-age=0, s-maxage=10800')
       res.send(formatRowsIntoResponse(rows));
     });
   } catch (error) {
