@@ -94,7 +94,7 @@
       },
 
       groupBy: function (data) {
-        return data.casesPer100kLast7Days > 20 ? 'High Risk' : (data.casesPer100kLast7Days > 10 ? 'Medium Risk' : 'Low Risk')
+        return data.continent;
       },
 
       ajaxRequestFunc: function (url, config, params) {
